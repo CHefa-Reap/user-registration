@@ -12,19 +12,14 @@ function App() {
 	const userRole = sessionStorage.getItem('userrole');
 	return (
 		<Routes>
-			<Route path='/auth/login' element={<Login />} />
+			<Route path='/' element={<Login />} />
 			<Route path='/auth/register' element={<Register />} />
 
-			{userRole == 'user' && (
-				<Route path='/dashboard' element={<Dashboard />} />
-			)}
-			{userRole == 'admin' && (
-				<Route path='/admin-dashboard' element={<AdminDashboard />} />
-			)}
+			<Route path='/dashboard' element={<Dashboard />} />
 
-			{userRole == 'admin' && (
-				<Route path='/user-details' element={<UsersDetails />} />
-			)}
+			<Route path='/admin-dashboard' element={<AdminDashboard />} />
+
+			<Route path='/user-details' element={<UsersDetails />} />
 
 			<Route path='/user/edit-user/:id' element={<AddEditUser />} />
 		</Routes>

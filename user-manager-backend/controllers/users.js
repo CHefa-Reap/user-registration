@@ -47,5 +47,4 @@ exports.DeleteUser = asyncHandler(async (req, res, next) => {
 
 exports.getUserByEmail = asyncHandler(async (email, req, res) => {
 	const UserDetail = await Users.findOne({ email });
-	console.log(UserDetail);
 });

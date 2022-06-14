@@ -1,11 +1,10 @@
-const errorHandler = (err, req,res,next) => {
-    //Log to console for dev
-    console.log(err.stack.red);
+const errorHandler = (err, req, res, next) => {
+	//Log to console for dev
 
-    res.status(500).json({
-        success: false,
-        error: err.message
-    }); 
-}
+	res.status(500).json({
+		success: false,
+		error: err.message,
+	});
+};
 
-module.exports = errorHandler
+module.exports = errorHandler;

@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { Table } from 'react-bootstrap';
 import axios from '../../api/axios';
 import { Link, useParams } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar';
 
 const getAllUsers = '/api/v1/users';
 const deleteUser = '/api/v1/users';
@@ -16,25 +17,24 @@ function UsersDetails() {
 
 	const [data, setData] = useState([]);
 	useEffect(() => {
-		const response = axios.get(getAllUsers).then(function (response) {
-			console.log(response.data.data);
-			setData(response.data.data);
-		});
+		fetchUsers();
 	}, []);
 
-	function handleDelete(id) {
-		console.log('BYE', id);
+	async function fetchUsers() {
+		const response = await axios.get(getAllUsers).then(function (response) {
+			setData(response.data.data);
+		});
+	}
+	async function handleDelete(id) {
 		if (userrole == 'admin') {
-			const response = axios
-				.delete('/api/v1/users/' + id)
-				.then(function (response) {
-					console.log('DONE');
-				});
+			const response = await axios.delete('/api/v1/users/' + id);
 		}
+		await fetchUsers();
 	}
 
 	return (
-		<div className='mt-5'>
+		<div>
+			<Navbar />
 			<Container>
 				<Box>
 					<hr />{' '}
@@ -51,8 +51,9 @@ function UsersDetails() {
 							{data &&
 								data.map((data, index) => (
 									<tr id={data.id} key={index}>
-										<Link to={`/user/edit-user/${data._id}`}>
-											{' '}
+										<Link
+											className='table-row'
+											to={`/user/edit-user/${data._id}`}>
 											<td>{data.name}</td>
 										</Link>
 										<td>{data.email}</td>

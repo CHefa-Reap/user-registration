@@ -1,11 +1,13 @@
-import React from 'react';
 import { Form, Card } from 'react-bootstrap';
 import Button from 'react-bootstrap/Button';
 import { useRef, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
 import CircularProgress from '@mui/material/CircularProgress';
+import Spinner from 'react-bootstrap/Spinner';
 import axios from '../../api/axios';
+import Swal from 'sweetalert2';
+import 'sweetalert2/src/sweetalert2.scss';
 const LOGIN_URL = `/api/v1/auth/login`;
 
 function Login() {
@@ -57,42 +59,36 @@ function Login() {
 			setErrors(newErrors);
 		} else {
 			try {
-				if (
-					sessionStorage.getItem('userrole') === null &&
-					sessionStorage.getItem('userName') === null
-				) {
-					const response = await axios.post(
-						LOGIN_URL,
-						JSON.stringify({ email: user, password: pwd }),
-						{
-							headers: { 'Content-Type': 'application/json' },
-							withCredentials: true,
-						}
-					);
-
-					//console.log(JSON.stringify(response));
-					const userRole = response.data.user.role;
-					const userName = response.data.user.name;
-					const userID = response.data.user._id;
-
-					if (userRole == 'user') {
-						navigate('/dashboard');
+				const response = await axios.post(
+					LOGIN_URL,
+					JSON.stringify({ email: user, password: pwd }),
+					{
+						headers: { 'Content-Type': 'application/json' },
+						withCredentials: true,
 					}
+				);
 
-					if (userRole == 'admin') {
-						navigate('/admin-dashboard');
-					}
+				const userRole = response.data.user.role;
+				const userName = response.data.user.name;
+				const userID = response.data.user._id;
 
-					sessionStorage.setItem('userrole', userRole);
-					sessionStorage.setItem('userName', userName);
-					sessionStorage.setItem('userID', userID);
+				sessionStorage.setItem('userrole', userRole);
+				sessionStorage.setItem('userName', userName);
+				sessionStorage.setItem('userID', userID);
+				setUser('');
+				setPwd('');
+				Swal.fire('Congraulations 🎉', 'Logged In Successfully', 'success');
 
-					setUser('');
-					setPwd('');
-					setLoading(true);
-				} else {
-					sessionStorage.clear();
+				if (userRole == 'user') {
+					navigate('/dashboard');
 				}
+
+				if (userRole == 'admin') {
+					navigate('/admin-dashboard');
+				}
+
+				setLoading(true);
+
 				// navigate(from, { replace: true });
 			} catch (err) {
 				if (!err?.response) {
@@ -151,13 +147,26 @@ function Login() {
 							<div className='rounded-0 d-grid gap-2 mx-auto'>
 								<Button type='submit'>
 									Login
-									{loading && <CircularProgress />}
+									{loading && (
+										<>
+											{' '}
+											<Spinner
+												as='span'
+												animation='border'
+												size='sm'
+												role='status'
+												aria-hidden='true'
+											/>
+										</>
+									)}
 								</Button>
 							</div>
 							<div className='mt-4 text-center  text-dark'>
 								<p className='mt-4 text-center  font-weight-normal'>
-									Don't have an account ?<br></br>
-									<strong>Register Now </strong>
+									<Link to={'/auth/register'}>
+										Don't have an account ?<br></br>
+										<strong>Register Now </strong>
+									</Link>
 								</p>
 
 								<span></span>
